@@ -24,4 +24,14 @@ public class AddressServiceImpl implements AddressService {
         return addressRepository.findAll();
     }
 
+    @Override
+    @Transactional
+    public void delete(Address entity) {
+        addressRepository.delete(entity);
+    }
+
+    @Override
+    public Address findById(Long id) {
+        return addressRepository.findOne(id);
+    }
 }

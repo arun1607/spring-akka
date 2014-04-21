@@ -25,4 +25,14 @@ public class PersonServiceImpl implements PersonService {
         return personRepository.findAll();
     }
 
+    @Override
+    @Transactional
+    public void delete(Person person) {
+        personRepository.delete(person);
+    }
+
+    @Override
+    public Person findById(Long id) {
+        return personRepository.findOne(id);
+    }
 }
