@@ -3,47 +3,47 @@ package com.app.learning.execution;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import com.app.learning.config.AppConfig;
 import com.app.learning.model.Address;
 import com.app.learning.model.Person;
 import com.app.learning.service.AddressService;
 import com.app.learning.service.PersonService;
 
-@Component
-public class App implements ApplicationContextAware {
+@Configuration
+@ComponentScan("com.app.learning")
+@EnableJpaRepositories("com.app.learning.repository")
+@EnableAutoConfiguration
+public class App {
 
-	private ApplicationContext applicationContext;
-
-	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(
-				AppConfig.class);
-		App app = ctx.getBean("app", App.class);
-
-		// app.populatePerson();
-		app.delete();
-		app.showDetails();
-
+		SpringApplication.run(App.class, args);
 	}
 
+}
+
+class AppCommandLineRunner implements CommandLineRunner {
+
+	@Autowired
+	private PersonService personService;
+
+	@Autowired
+	private AddressService addressService;
+
 	@Override
-	public void setApplicationContext(ApplicationContext ctx)
-			throws BeansException {
-		this.applicationContext = ctx;
+	public void run(String... arg0) throws Exception {
+		showDetails();
 	}
 
 	public void populatePerson() {
-		PersonService personService = applicationContext
-				.getBean(PersonService.class);
-		AddressService addressService = applicationContext
-				.getBean(AddressService.class);
+
 		Person person = new Person();
 		person.setName("Jack");
 		Address address1 = new Address();
@@ -60,8 +60,6 @@ public class App implements ApplicationContextAware {
 	}
 
 	public void showDetails() {
-		AddressService addressService = applicationContext
-				.getBean(AddressService.class);
 		for (Address address : addressService.findAll()) {
 			System.out.println(address.getPerson().getName());
 		}
@@ -69,8 +67,6 @@ public class App implements ApplicationContextAware {
 	}
 
 	public void delete() {
-		PersonService personService = applicationContext
-				.getBean(PersonService.class);
 		Person person = personService.findById(1L);
 		// person.getAddresses().clear();
 		// personService.save(person);
