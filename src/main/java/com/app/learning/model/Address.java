@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -17,7 +16,7 @@ public class Address {
 	private String country;
 
 	@ManyToOne
-	@JoinTable(name = "PERSON_ADDRESS", joinColumns = @JoinColumn(name = "address_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
+	@JoinColumn(name = "person_id")
 	private Person person;
 
 	public String getCountry() {

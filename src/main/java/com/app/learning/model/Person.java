@@ -21,7 +21,7 @@ public class Person {
 
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "person")
+	@OneToMany(mappedBy = "person", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Address> addresses = new HashSet<>();
 
 	public Long getPersonId() {
