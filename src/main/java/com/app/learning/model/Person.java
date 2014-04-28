@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -21,7 +23,8 @@ public class Person {
 
 	private String name;
 
-	@OneToMany(mappedBy = "person", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "Person_Address", joinColumns = @JoinColumn(name = "address_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
 	private Set<Address> addresses = new HashSet<>();
 
 	public Long getPersonId() {
@@ -52,8 +55,6 @@ public class Person {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ (addresses == null ? 0 : addresses.hashCode());
 		result = prime * result + (name == null ? 0 : name.hashCode());
 		result = prime * result + (personId == null ? 0 : personId.hashCode());
 		return result;
@@ -71,13 +72,6 @@ public class Person {
 			return false;
 		}
 		Person other = (Person) obj;
-		if (addresses == null) {
-			if (other.addresses != null) {
-				return false;
-			}
-		} else if (!addresses.equals(other.addresses)) {
-			return false;
-		}
 		if (name == null) {
 			if (other.name != null) {
 				return false;

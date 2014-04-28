@@ -23,6 +23,8 @@ public class PersonRepositoryTest {
 
 	@Test
 	public void testFindAll() throws Exception {
-		Assert.assertTrue(personService.findAll().size() > 0);
+		int size = personService.findAll().size();
+		System.out.println("Collection size :" + size);
+		Assert.assertTrue(size > 0);
 	}
 }

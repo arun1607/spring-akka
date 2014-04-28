@@ -1,9 +1,11 @@
 package com.app.learning.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -15,8 +17,8 @@ public class Address {
 
 	private String country;
 
-	@ManyToOne
-	@JoinColumn(name = "person_id")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinTable(name = "Person_Address", joinColumns = @JoinColumn(name = "person_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
 	private Person person;
 
 	public String getCountry() {
@@ -49,7 +51,6 @@ public class Address {
 		int result = 1;
 		result = prime * result + (country == null ? 0 : country.hashCode());
 		result = prime * result + (id == null ? 0 : id.hashCode());
-		result = prime * result + (person == null ? 0 : person.hashCode());
 		return result;
 	}
 
@@ -77,13 +78,6 @@ public class Address {
 				return false;
 			}
 		} else if (!id.equals(other.id)) {
-			return false;
-		}
-		if (person == null) {
-			if (other.person != null) {
-				return false;
-			}
-		} else if (!person.equals(other.person)) {
 			return false;
 		}
 		return true;
