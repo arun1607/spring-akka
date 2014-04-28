@@ -3,9 +3,7 @@ package com.app.learning.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class Address {
@@ -16,8 +14,10 @@ public class Address {
 
 	private String country;
 
-	@ManyToOne
-	@JoinTable(name = "PERSON_ADDRESS", joinColumns = @JoinColumn(name = "address_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
+	// @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	// s@JoinTable(name = "Person_Address", joinColumns = @JoinColumn(name =
+	// "address_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
+	@Transient
 	private Person person;
 
 	public String getCountry() {

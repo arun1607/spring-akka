@@ -22,6 +22,18 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
+	public void populate() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void showDetails() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public List<Ticket> findAll() {
 		return ticketRepository.findAll();
 	}
