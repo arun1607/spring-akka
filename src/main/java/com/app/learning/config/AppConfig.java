@@ -6,6 +6,9 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import akka.actor.ActorSystem;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +29,6 @@ import com.mchange.v2.c3p0.DriverManagerDataSource;
 @ComponentScan("com.app.learning")
 @PropertySource("classpath:application.properties")
 @EnableJpaRepositories("com.app.learning.repository")
-// @ImportResource("classpath:database.xml")
 public class AppConfig {
 
 	private static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
@@ -96,5 +98,19 @@ public class AppConfig {
 		properties.put("hibernate.format_sql", "true");
 		properties.put("dialect", "org.hibernate.dialect.MySQL5Dialect");
 		return properties;
+	}
+
+	@Autowired
+	private ApplicationContext applicationContext;
+
+	/**
+	 * Actor system singleton for this application.
+	 */
+	@Bean
+	public ActorSystem actorSystem() {
+		ActorSystem system = ActorSystem.create("AkkaJavaSpring");
+		// initialize the application context in the Akka Spring Extension
+		SpringExtension.SpringExtProvider.get(system).initialize(applicationContext);
+		return system;
 	}
 }
