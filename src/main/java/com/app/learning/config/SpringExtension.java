@@ -6,6 +6,8 @@ import akka.actor.Extension;
 import akka.actor.Props;
 import org.springframework.context.ApplicationContext;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * An Akka Extension to provide access to Spring managed Actor Beans.
  */
@@ -47,9 +49,9 @@ public class SpringExtension extends
      * @param actorBeanName  The name of the actor bean to create Props for
      * @return a Props that will create the named actor bean using Spring
      */
-    public Props props(String actorBeanName) {
+    public Props props(String actorBeanName,CountDownLatch countDownLatch) {
       return Props.create(SpringActorProducer.class,
-        applicationContext, actorBeanName);
+        applicationContext, actorBeanName,countDownLatch);
     }
   }
 }

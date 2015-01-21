@@ -1,11 +1,16 @@
 package com.app.learning.service;
 
+import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.japi.Creator;
 import com.app.learning.model.Messege;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * An actor that can count using an injected CountingService.
@@ -17,27 +22,35 @@ import javax.inject.Named;
 @Scope("prototype")
 class MessagingActor extends UntypedActor {
 
-  public static class Count {}
-  public static class Get {}
+    private final CountDownLatch latch;
 
-  // the service that will be automatically injected
-  final MessageService messageService;
+    // the service that will be automatically injected
+    @Inject
+    @Qualifier("messageService")
+    private MessageService messageService;
 
-  @Inject
-  public MessagingActor(@Named("messageService") MessageService messageService) {
-    this.messageService = messageService;
-  }
-
-  private int count = 0;
-
-  @Override
-  public void onReceive(Object message) throws Exception {
-    if (message instanceof Messege) {
-      messageService.save((Messege) message);
-    } else if (message instanceof Get) {
-      getSender().tell(count, getSelf());
-    } else {
-      unhandled(message);
+    public MessagingActor(CountDownLatch latch) {
+        this.latch = latch;
     }
-  }
+
+    @Override
+    public void onReceive(Object message) throws Exception {
+        if (message instanceof Messege) {
+            messageService.save((Messege) message);
+            latch.countDown();
+        }  else {
+            unhandled(message);
+        }
+    }
+
+    public static Props props(final CountDownLatch countDownLatch) {
+        return Props.create(new Creator<MessagingActor>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public MessagingActor create() throws Exception {
+                return new MessagingActor(countDownLatch);
+            }
+        });
+    }
 }
